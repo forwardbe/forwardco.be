@@ -2,6 +2,9 @@ import { formatCurrency } from '@/app/utils/money';
 import Button from '@/components/Button';
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { DeleteButton } from './deleteButton';
+import Link from 'next/link';
+import SubmitButton from '@/components/SubmitButton';
 
 async function getClients() {
   const supabase = createClient();
@@ -37,14 +40,14 @@ export default async function Page() {
       <table className="w-full mt-4">
         <thead className="bg-neutral-100">
           <tr>
-            <th className="text-left font-semibold py-4 px-6 rounded-l">
+            <th className="text-left font-semibold py-3 text-sm px-6 rounded-l">
               Name
             </th>
-            <th className="text-left font-semibold py-4 px-6">Email</th>
-            <th className="text-left font-semibold py-4 px-6">Phone</th>
-            <th className="text-left font-semibold py-4 px-6">BTW</th>
-            <th className="text-left font-semibold py-4 px-6">Rate</th>
-            <th className="text-left font-semibold py-4 px-6 sr-only rounded-r">
+            <th className="text-left font-semibold py-3 text-sm px-6">Email</th>
+            <th className="text-left font-semibold py-3 text-sm px-6">Phone</th>
+            <th className="text-left font-semibold py-3 text-sm px-6">BTW</th>
+            <th className="text-left font-semibold py-3 text-sm px-6">Rate</th>
+            <th className="text-left font-semibold py-3 text-sm px-6 sr-only rounded-r">
               Edit
             </th>
           </tr>
@@ -60,10 +63,16 @@ export default async function Page() {
                 {formatCurrency(client.rate)}
               </td>
               <td className="py-4 px-6 whitespace-nowrap flex items-center justify-end gap-3">
-                <button className="hover:underline">Edit</button>
-                <form action={deleteClient}>
+                <Link href={`/edit/client/${client.id}`} className="hover:underline">Edit</Link>
+                <form>
                   <input type="hidden" name="id" value={client.id} />
-                  <button type="submit" className="hover:underline">Delete</button>
+                  <SubmitButton
+                    formAction={deleteClient}
+                    pendingText="Deleting..."
+                    blank
+                  >
+                    Delete
+                  </SubmitButton>
                 </form>
               </td>
             </tr>

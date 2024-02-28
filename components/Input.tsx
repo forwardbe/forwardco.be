@@ -6,6 +6,7 @@ interface InputProps {
   required?: boolean;
   placeholder?: string;
   type?: 'text' | 'number';
+  defaultValue?: string;
 }
 
 export default function Input({
@@ -14,6 +15,7 @@ export default function Input({
   required = false,
   placeholder,
   type = 'text',
+  defaultValue,
   ...props
 }: InputProps & InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -27,6 +29,7 @@ export default function Input({
         placeholder={placeholder}
         required={required}
         type={type}
+        defaultValue={defaultValue}
         {...props}
       />
     </div>
