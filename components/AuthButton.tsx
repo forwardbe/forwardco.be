@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import Button from './Button';
 
-export default async function AuthButton() {
+export default async function AuthButton({ homeButton = false }) {
   const supabase = createClient();
 
   const {
@@ -19,10 +19,8 @@ export default async function AuthButton() {
   };
 
   return user ? (
-    <div className="flex items-center gap-2">
-      <Button as="link" href="/calendar">
-        Go to calendar
-      </Button>
+    <div className="flex items-center gap-6">
+      {homeButton ? <Link href="/calendar">Go to app</Link> : null}
       <form action={signOut}>
         <Button as="button" type="submit">
           Logout

@@ -26,7 +26,7 @@ export default function RootLayout({
             <div
               style={{
                 position: 'fixed',
-                top: 0,
+                bottom: 0,
                 left: 0,
                 right: 0,
                 zIndex: 9999,
@@ -37,22 +37,7 @@ export default function RootLayout({
             >
               <p>Local</p>
             </div>
-          ) : (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-                padding: '1rem',
-                backgroundColor: 'red',
-                color: 'white',
-              }}
-            >
-              <p>Production</p>
-            </div>
-          )}
+          ) : null}
           {children}
         </main>
       </body>
