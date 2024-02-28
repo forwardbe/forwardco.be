@@ -1,5 +1,6 @@
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
+import { Toaster } from 'react-hot-toast';
 
 const defaultUrl = process.env.WEBSITE_URL
   ? `https://${process.env.WEBSITE_URL}`
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body>
+        <Toaster />
         <main>
           {isLocal ? (
             <div

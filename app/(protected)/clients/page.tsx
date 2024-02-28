@@ -1,55 +1,36 @@
 import { formatCurrency } from '@/app/utils/money';
 import Button from '@/components/Button';
+import { createClient } from '@/utils/supabase/server';
+import { revalidatePath } from 'next/cache';
 
-const clients = [
-  {
-    id: 1,
-    name: 'John Doe',
-    phone: '555-555-5555',
-    email: 'jaspervermeulen@icloud.com',
-    address: '1234 Main St',
-    btw: 'BE1234567890',
-    rate: 50,
-  },
-  {
-    id: 2,
-    name: 'John Doe',
-    phone: '555-555-5555',
-    email: 'jaspervermeulen@icloud.com',
-    address: '1234 Main St',
-    btw: 'BE1234567890',
-    rate: 50,
-  },
-  {
-    id: 3,
-    name: 'John Doe',
-    phone: '555-555-5555',
-    email: 'jaspervermeulen@icloud.com',
-    address: '1234 Main St',
-    btw: 'BE1234567890',
-    rate: 50,
-  },
-  {
-    id: 4,
-    name: 'John Doe',
-    phone: '555-555-5555',
-    email: 'jaspervermeulen@icloud.com',
-    address: '1234 Main St',
-    btw: 'BE1234567890',
-    rate: 50,
-  },
-  {
-    id: 5,
-    name: 'John Doe',
-    phone: '555-555-5555',
-    email: 'jaspervermeulen@icloud.com',
-    address: '1234 Main St',
-    btw: 'BE1234567890',
-    rate: 50,
-  },
-];
+async function getClients() {
+  const supabase = createClient();
+  const { data: clients } = await supabase.from('clients').select();
+  return clients || [];
+}
 
-export default function Page() {
+export default async function Page() {
+  const clients = await getClients();
+
+  async function deleteClient(formData: FormData) {
+    'use server';
+
+    const supabase = createClient();
+    const rawFormData = {
+      id: formData.get('id') as string,
+    };
+
+    const { data } = await supabase
+      .from('clients')
+      .delete()
+      .eq('id', rawFormData.id)
+      .select();
+
+    if (data) {
+      revalidatePath('/clients');
+    }
+  }
+
   return (
     <div>
       <p className="text-lg font-semibold">Clients</p>
@@ -59,9 +40,8 @@ export default function Page() {
             <th className="text-left font-semibold py-4 px-6 rounded-l">
               Name
             </th>
-            <th className="text-left font-semibold py-4 px-6">Phone</th>
             <th className="text-left font-semibold py-4 px-6">Email</th>
-            <th className="text-left font-semibold py-4 px-6">Address</th>
+            <th className="text-left font-semibold py-4 px-6">Phone</th>
             <th className="text-left font-semibold py-4 px-6">BTW</th>
             <th className="text-left font-semibold py-4 px-6">Rate</th>
             <th className="text-left font-semibold py-4 px-6 sr-only rounded-r">
@@ -72,22 +52,33 @@ export default function Page() {
         <tbody>
           {clients.map((client) => (
             <tr key={client.id} className="border-b last:border-none">
-              <td className="py-4 px-6">{client.name}</td>
-              <td className="py-4 px-6">{client.phone}</td>
-              <td className="py-4 px-6">{client.email}</td>
-              <td className="py-4 px-6">{client.address}</td>
-              <td className="py-4 px-6">{client.btw}</td>
-              <td className="py-4 px-6">{formatCurrency(client.rate)}</td>
-              <td className="py-4 px-6 flex items-center justify-end gap-3">
+              <td className="py-4 px-6 whitespace-nowrap">{client.name}</td>
+              <td className="py-4 px-6 whitespace-nowrap">{client.email}</td>
+              <td className="py-4 px-6 whitespace-nowrap">{client.phone}</td>
+              <td className="py-4 px-6 whitespace-nowrap">{client.btw}</td>
+              <td className="py-4 px-6 whitespace-nowrap">
+                {formatCurrency(client.rate)}
+              </td>
+              <td className="py-4 px-6 whitespace-nowrap flex items-center justify-end gap-3">
                 <button className="hover:underline">Edit</button>
-                <button className="hover:underline">Delete</button>
+                <form action={deleteClient}>
+                  <input type="hidden" name="id" value={client.id} />
+                  <button type="submit" className="hover:underline">Delete</button>
+                </form>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="mt-4 mr-4 flex items-center justify-end">
-        <Button as="link" href="/new/client">Add client</Button>
+      {clients.length === 0 && (
+        <p className="mt-4 ml-6 text-neutral-400">
+          No clients yet. Add your first client to get started.
+        </p>
+      )}
+      <div className="mt-4 mr-6 flex items-center justify-end">
+        <Button as="link" href="/new/client">
+          Add client
+        </Button>
       </div>
     </div>
   );
