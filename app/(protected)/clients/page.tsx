@@ -38,15 +38,23 @@ export default async function Page() {
     <div>
       <p className="text-lg font-semibold">Clients</p>
       <table className="w-full mt-4">
-        <thead className="bg-neutral-100">
+        <thead className="border rounded">
           <tr>
-            <th className="text-left font-semibold py-3 text-sm px-6 rounded-l">
+            <th className="text-left font-semibold border-r py-3 text-sm px-6 rounded-l">
               Name
             </th>
-            <th className="text-left font-semibold py-3 text-sm px-6">Email</th>
-            <th className="text-left font-semibold py-3 text-sm px-6">Phone</th>
-            <th className="text-left font-semibold py-3 text-sm px-6">BTW</th>
-            <th className="text-left font-semibold py-3 text-sm px-6">Rate</th>
+            <th className="text-left font-semibold border-r py-3 text-sm px-6">
+              Email
+            </th>
+            <th className="text-left font-semibold border-r py-3 text-sm px-6">
+              Phone
+            </th>
+            <th className="text-left font-semibold border-r py-3 text-sm px-6">
+              BTW
+            </th>
+            <th className="text-left font-semibold py-3 text-sm px-6">
+              Rate
+            </th>
             <th className="text-left font-semibold py-3 text-sm px-6 sr-only rounded-r">
               Edit
             </th>
@@ -63,7 +71,12 @@ export default async function Page() {
                 {formatCurrency(client.rate)}
               </td>
               <td className="py-4 px-6 whitespace-nowrap flex items-center justify-end gap-3">
-                <Link href={`/edit/client/${client.id}`} className="hover:underline">Edit</Link>
+                <Link
+                  href={`/edit/client/${client.id}`}
+                  className="hover:underline"
+                >
+                  Edit
+                </Link>
                 <form>
                   <input type="hidden" name="id" value={client.id} />
                   <SubmitButton
@@ -84,7 +97,7 @@ export default async function Page() {
           No clients yet. Add your first client to get started.
         </p>
       )}
-      <div className="mt-4 mr-6 flex items-center justify-end">
+      <div className="mt-4 flex items-center justify-end">
         <Button as="link" href="/new/client">
           Add client
         </Button>

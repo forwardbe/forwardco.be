@@ -24,7 +24,7 @@ export default function RootLayout({
       <body>
         <Toaster />
         <main>
-          {isLocal ? (
+          {/* {isLocal ? (
             <div
               style={{
                 position: 'fixed',
@@ -39,7 +39,7 @@ export default function RootLayout({
             >
               <p>Local</p>
             </div>
-          ) : null}
+          ) : null} */}
           {children}
         </main>
       </body>

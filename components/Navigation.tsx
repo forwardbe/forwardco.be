@@ -7,33 +7,21 @@ export default function Navigation() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-3">
       <Link
-        className={
-          pathname === '/calendar'
-            ? 'bg-neutral-100 py-1.5 px-2 rounded'
-            : 'bg-white p-2'
-        }
+        className={pathname === '/calendar' ? 'underline' : ''}
         href="/calendar"
       >
         Calendar
       </Link>
       <Link
-        className={
-          pathname === '/clients'
-            ? 'bg-neutral-100 py-1.5 px-2 rounded'
-            : 'bg-white p-2'
-        }
+        className={pathname === '/clients' ? 'underline' : ''}
         href="/clients"
       >
         Clients
       </Link>
       <Link
-        className={
-          pathname === '/invoices'
-            ? 'bg-neutral-100 py-1.5 px-2 rounded'
-            : 'bg-white p-2'
-        }
+        className={pathname === '/invoices' ? 'underline' : ''}
         href="/invoices"
       >
         Invoices

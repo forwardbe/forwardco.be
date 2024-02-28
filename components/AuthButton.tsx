@@ -20,7 +20,7 @@ export default async function AuthButton({ homeButton = false }) {
 
   return user ? (
     <div className="flex items-center gap-6">
-      {homeButton ? <Link href="/calendar">Go to app</Link> : `Hi, ${user.email}!`}
+      {homeButton ? <Link href="/calendar">Go to app</Link> : <Link href="/account">Account</Link>}
       <form action={signOut}>
         <Button as="button" type="submit">
           Logout

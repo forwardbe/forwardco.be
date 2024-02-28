@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import SubmitButton from '@/components/SubmitButton';
+import Button from '@/components/Button';
 
 async function getClient(id: string) {
   const supabase = createClient();
@@ -84,7 +85,10 @@ export default async function Page({ params }: { params: { id: string } }) {
             step=".01"
           />
         </div>
-        <div className="mt-6 flex items-center justify-end">
+        <div className="mt-6 flex items-center gap-2 justify-end">
+          <Button as="link" href="/clients">
+            Cancel
+          </Button>
           <SubmitButton
             formAction={updateClient}
             className="bg-neutral-900 text-white rounded-md px-4 py-2 text-foreground mb-2"
