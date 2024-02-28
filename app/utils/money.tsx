@@ -5,7 +5,7 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function timeDifferenceAsDecimal(startTime, endTime) {
+export function timeDifferenceAsDecimal(startTime: string, endTime: string) {
   const [startHours, startMinutes] = startTime.split(':').map(Number);
   const [endHours, endMinutes] = endTime.split(':').map(Number);
 
@@ -19,7 +19,7 @@ export function timeDifferenceAsDecimal(startTime, endTime) {
   return differenceAsDecimal;
 }
 
-export function decimalToTime(decimal) {
+export function decimalToTime(decimal: number) {
   const hours = Math.floor(decimal);
   const minutes = Math.round((decimal - hours) * 60);
 

@@ -7,26 +7,27 @@ import { useState } from 'react';
 import jsPDF from 'jspdf';
 import { decimalToTime, formatCurrency } from '@/app/utils/money';
 import { useRouter } from 'next/navigation';
+import { Event } from '@/types/events';
 
 export default function Selection({
   events,
   user,
   client,
 }: {
-  events: any;
+  events: Event[];
   user: any;
   client: any;
 }) {
   const router = useRouter();
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [issueDate, setIssueDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [tax, setTax] = useState('');
 
-  function toggleItem(item) {
-    if (selectedItems.find((i) => i.id === item.id)) {
-      setSelectedItems(selectedItems.filter((i) => i.id !== item.id));
+  function toggleItem(item: Event) {
+    if (selectedItems.find((event: Event) => event.id === item.id)) {
+      setSelectedItems(selectedItems.filter((event:Event) => event.id !== item.id));
     } else {
       setSelectedItems([...selectedItems, item]);
     }
@@ -154,14 +155,14 @@ export default function Selection({
         events.sort((a, b) => {
           const dateA = a.date.split('/').reverse().join('-');
           const dateB = b.date.split('/').reverse().join('-');
-          return new Date(dateA) - new Date(dateB);
+          return new Date(dateA).getTime() - new Date(dateB).getTime();
         })[0].date,
         'dd-MM-yyyy'
       )} - ${format(
         events.sort((a, b) => {
           const dateA = a.date.split('/').reverse().join('-');
           const dateB = b.date.split('/').reverse().join('-');
-          return new Date(dateA) - new Date(dateB);
+          return new Date(dateA).getTime() - new Date(dateB).getTime();
         })[events.length - 1].date,
         'dd-MM-yyyy'
       )})`,
@@ -368,7 +369,7 @@ export default function Selection({
       </div>
       <div className="mt-4 flex flex-col gap-2">
         {events
-          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
           .map((event: any) => {
             return (
               <button
