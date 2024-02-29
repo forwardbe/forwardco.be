@@ -2,7 +2,9 @@ import Input from '@/components/Input';
 import SubmitButton from '@/components/SubmitButton';
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import CustomerPortalForm from './customerPortalForm';
 
 async function getUser() {
   const supabase = createClient();
@@ -17,8 +19,21 @@ async function getUser() {
   return user;
 }
 
+async function getSubscriptions() {
+  const supabase = createClient();
+
+  const { data: subscription, error } = await supabase
+    .from('subscriptions')
+    .select('*, prices(*, products(*))')
+    .in('status', ['trialing', 'active'])
+    .maybeSingle();
+
+  return subscription;
+}
+
 export default async function Page() {
   const user = await getUser();
+  const subscription = await getSubscriptions();
 
   async function updateAccount(formData: FormData) {
     'use server';
@@ -48,6 +63,10 @@ export default async function Page() {
   return (
     <div>
       <p className="text-lg font-semibold">Business info</p>
+      <Link href="https://buy.stripe.com/test_6oEbIK7mgeg3dxebII">
+        PRO PLAN
+      </Link>
+      <CustomerPortalForm subscription={subscription} />
       <form className="mt-4 bg-neutral-50 p-6 rounded-lg">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           <Input

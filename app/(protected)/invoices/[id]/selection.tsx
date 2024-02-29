@@ -48,66 +48,57 @@ export default function Selection({
     // eslint-disable-next-line new-cap
     const doc = new jsPDF();
 
-    // create invoice in db
     const { data } = await supabase
       .from('invoices')
-      .insert(
-        {
-          client_id: client.id,
-          user_id: user.id,
-          invoice_id: invoiceNumber,
-          issue: issueDate,
-          due: dueDate,
-          tax: tax,
-        },
-      )
-      .select().single();
-    
-    console.log(data)
+      .insert({
+        client_id: client.id,
+        user_id: user.id,
+        invoice_id: invoiceNumber,
+        issue: issueDate,
+        due: dueDate,
+        tax: tax,
+        total: formatCurrency(
+          events.reduce((prev, cur) => prev + cur.timeAsDecimal, 0) *
+            client.rate +
+            events.reduce((prev, cur) => prev + cur.timeAsDecimal, 0) *
+              client.rate *
+              (Number(tax) / 100)
+        ),
+      })
+      .select()
+      .single();
 
     if (data) {
-      // update invoiced boolean on items
       events.forEach(async (item) => {
         await supabase
           .from('events')
-          .update({ invoiced: true, linked_invoice: data.id})
+          .update({ invoiced: true, linked_invoice: data.id })
           .eq('id', item.id);
       });
-
       const start = 24;
       const middle = 100;
       const end = 186;
 
-      // Title
       doc.setFontSize(24);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
       doc.text('Invoice', start, 28);
-
       doc.setFontSize(10.5);
 
       // Invoice Number
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('Invoice number', start, 40);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(invoiceNumber.toString(), start, 45.5);
 
       // Invoice date
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('Invoice date', start, 56);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(format(issueDate, 'dd-MM-yyyy'), start, 61.5);
 
       // Payment due date
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('Payment due', middle, 56);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(format(dueDate, 'dd-MM-yyyy'), middle, 61.5);
 
       // Divider line
@@ -115,62 +106,53 @@ export default function Selection({
       doc.line(start, 69.5, end, 69.5);
 
       // To
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('To', start, 80.5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(client.name, start, 86);
       doc.text(client.address, start, 91.5);
       doc.text(client.phone, start, 97);
       doc.text(client.email, start, 102.5);
 
       // From
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('From', middle, 80.5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(user.user_metadata.name, middle, 86);
       doc.text(user.user_metadata.address, middle, 91.5);
       doc.text(user.user_metadata.phone, middle, 97);
       doc.text(user.user_metadata.email, middle, 102.5);
 
       // BTW
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('BTW number', start, 113);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(client.btw, start, 118.5);
 
       // BTW
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
+      doc.setTextColor('#000');
       doc.text('BTW number', middle, 113);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
+      doc.setTextColor('#737373');
       doc.text(user.user_metadata.btw, middle, 118.5);
 
       // Divider line
+      doc.setDrawColor(209, 213, 219);
       doc.line(start, 129.5, end, 129.5);
 
-      // Price bg
-      doc.setDrawColor('#F3F4F6');
-      doc.setFillColor('#F3F4F6');
-      doc.roundedRect(start, 136.2, 162, 10, 1, 1, 'FD');
+      // Table background
+      doc.setDrawColor(209, 213, 219);
+      doc.roundedRect(start, 136.2, 162, 10, 0, 0, 'S');
 
-      // Name
-      doc.setTextColor('#111827');
+      // Table header
+      doc.setTextColor('#000');
       doc.text('Item', 28, 142.5);
       doc.text('Quantity', 110, 142.5);
       doc.text('Unit price', 135, 142.5);
       doc.text('Amount', 182, 142.5, { align: 'right' });
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
       doc.setDrawColor(229, 231, 235);
 
-      doc.setTextColor('#88909e');
+      // Table items
+      doc.setTextColor('#737373');
       doc.text(
         `Hours worked from (${format(
           events.sort((a, b) => {
@@ -207,50 +189,44 @@ export default function Selection({
         152,
         { align: 'right' }
       );
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
-      doc.setDrawColor(229, 231, 235);
 
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('Total excl BTW:', 125, 175);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#9ca3af');
+      // Total excl btw
+      doc.setTextColor('#000');
+      doc.text('Total excl BTW:', 125, 168);
+      doc.setTextColor('#737373');
       doc.text(
         formatCurrency(
           events.reduce((prev, cur) => prev + cur.timeAsDecimal, 0) *
             client.rate
         ),
-        180,
-        175,
+        182,
+        168,
         { align: 'right' }
       );
 
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('Total BTW:', 125, 185);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#9ca3af');
+      // Total btw
+      doc.setTextColor('#000');
+      doc.text('Total BTW:', 125, 178);
+      doc.setTextColor('#737373');
       doc.text(
         `${formatCurrency(
           events.reduce((prev, cur) => prev + cur.timeAsDecimal, 0) *
             client.rate *
             (Number(tax) / 100)
         )}`,
-        180,
-        185,
+        182,
+        178,
         { align: 'right' }
       );
 
-      doc.setDrawColor('#F3F4F6');
-      doc.setFillColor('#F3F4F6');
-      doc.roundedRect(122, 188.5, 62, 10, 1, 1, 'FD');
+      // Total background
+      doc.setDrawColor(209, 213, 219);
+      doc.roundedRect(122, 182, 64, 10, 0, 0, 'S');
 
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('Total:', 125, 195);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#9ca3af');
+      // Total
+      doc.setTextColor('#000');
+      doc.text('Total:', 125, 188);
+      doc.setTextColor('#737373');
       doc.text(
         formatCurrency(
           events.reduce((prev, cur) => prev + cur.timeAsDecimal, 0) *
@@ -259,63 +235,58 @@ export default function Selection({
               client.rate *
               (Number(tax) / 100)
         ),
-        180,
-        195,
+        182,
+        188,
         { align: 'right' }
       );
 
       doc.setDrawColor(209, 213, 219);
-      doc.line(start, 210, end, 210);
+      doc.line(start, 199, end, 199);
 
       // Account
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('Account', start, 220);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
-      doc.text(user.user_metadata.account, start, 225.5);
-
-      // IBAN
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('IBAN', start, 236);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#88909e');
-      doc.text(user.user_metadata.iban, start, 241.5);
+      doc.setTextColor('#000');
+      doc.text('Account', start, 210);
+      doc.setTextColor('#737373');
+      doc.text(user.user_metadata.account, start, 215.5);
 
       // BIC
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('BIC', middle, 220);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#9ca3af');
-      doc.text(user.user_metadata.bic, middle, 225.5);
+      doc.setTextColor('#000');
+      doc.text('BIC', middle, 210);
+      doc.setTextColor('#737373');
+      doc.text(user.user_metadata.bic, middle, 215.5);
 
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor('#111827');
-      doc.text('BTW', middle, 236);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor('#9ca3af');
-      doc.text(user.user_metadata.btw, middle, 241.5);
+      // IBAN
+      doc.setTextColor('#000');
+      doc.text('IBAN', start, 226);
+      doc.setTextColor('#737373');
+      doc.text(user.user_metadata.iban, start, 231.5);
+
+      // BTW
+      doc.setTextColor('#000');
+      doc.text('BTW', middle, 226);
+      doc.setTextColor('#737373');
+      doc.text(user.user_metadata.btw, middle, 231.5);
 
       doc.addPage();
-      doc.setFontSize(10.5);
-      doc.setTextColor('#111827');
-
+      doc.setTextColor('#000');
+      doc.text('Invoiced events', start, 28);
+      doc.setTextColor('#737373');
       let counter = 1;
-      // eslint-disable-next-line array-callback-return
       events.map((item) => {
-        doc.text(item.date, start, 30 + (counter - 1) * 10);
-        doc.text(item.start, middle, 30 + (counter - 1) * 10);
-        doc.text(item.end, middle + 20, 30 + (counter - 1) * 10);
+        doc.text(
+          format(item.date, 'dd/MM/yyyy'),
+          start,
+          40 + (counter - 1) * 10
+        );
+        doc.text(item.start, middle, 40 + (counter - 1) * 10);
+        doc.text(item.end, middle + 20, 40 + (counter - 1) * 10);
         doc.text(
           decimalToTime(item.timeAsDecimal),
           182,
-          30 + (counter - 1) * 10,
+          40 + (counter - 1) * 10,
           { align: 'right' }
         );
 
-        // eslint-disable-next-line no-plusplus
         counter++;
 
         if (counter > 24) {

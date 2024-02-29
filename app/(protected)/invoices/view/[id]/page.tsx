@@ -1,5 +1,5 @@
-import Button from '@/components/Button';
 import { createClient } from '@/utils/supabase/server';
+import { format } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 async function getEventsByInvoiceId(id: string) {
@@ -36,13 +36,11 @@ export default async function Page({ params }: { params: { id: string } }) {
   const events = await getEventsByInvoiceId(params.id);
   const invoice = await getInvoicebyId(params.id);
 
-  console.log(events);
-
   return (
     <div>
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Invoice</p>
-        <Button as="button">Download document</Button>
+        {/* <Button as="button">Download document</Button> */}
       </div>
       <div className="mt-4">
         <p>Document details</p>
@@ -97,6 +95,30 @@ export default async function Page({ params }: { params: { id: string } }) {
               disabled
             />
           </div>
+          <div className="flex col-span-2 flex-col">
+            <label className="text-md" htmlFor="number">
+              Client <span className="text-red-500">*</span>
+            </label>
+            <input
+              className="rounded-md disabled:cursor-not-allowed bg-white border-neutral-300 focus:ring-2 ring-neutral-600 transition  focus:outline-none shadow px-4 mt-2 py-2 bg-inherit border"
+              name="client"
+              type="text"
+              defaultValue={invoice.client_id.name}
+              disabled
+            />
+          </div>
+          <div className="flex col-span-2 flex-col">
+            <label className="text-md" htmlFor="number">
+              Total incl btw <span className="text-red-500">*</span>
+            </label>
+            <input
+              className="rounded-md disabled:cursor-not-allowed bg-white border-neutral-300 focus:ring-2 ring-neutral-600 transition  focus:outline-none shadow px-4 mt-2 py-2 bg-inherit border"
+              name="total"
+              type="text"
+              defaultValue={invoice.total}
+              disabled
+            />
+          </div>
         </div>
       </div>
       <div className="mt-4">
@@ -121,7 +143,9 @@ export default async function Page({ params }: { params: { id: string } }) {
               key={event.id}
               className="border-b last:border-none hover:bg-neutral-100 transition"
             >
-              <td className="py-4 px-6 whitespace-nowrap">{event.date}</td>
+              <td className="py-4 px-6 whitespace-nowrap">
+                {format(event.date, 'dd/MM/yyyy')}
+              </td>
 
               <td className="py-4 px-6 whitespace-nowrap">{event.start}</td>
               <td className="py-4 px-6 whitespace-nowrap">{event.end}</td>

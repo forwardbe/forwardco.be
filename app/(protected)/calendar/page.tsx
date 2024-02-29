@@ -22,9 +22,24 @@ import {
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import ClientFilter from './clientFilter';
 
-async function getEvents() {
+async function getEvents(client: number | undefined) {
   const supabase = createClient();
+
+  if (client) {
+    const { data: events, error } = await supabase
+      .from('events')
+      .select(`*, client_id (name)`)
+      .eq('client_id', client);
+
+    if (error) {
+      return redirect('/calendar');
+    }
+
+    return events || [];
+  }
+
   const { data: events, error } = await supabase
     .from('events')
     .select(`*, client_id (name)`);
@@ -36,10 +51,22 @@ async function getEvents() {
   return events || [];
 }
 
+async function getClients() {
+  const supabase = createClient();
+  const { data: clients, error } = await supabase.from('clients').select();
+
+  if (error) {
+    return redirect('/clients');
+  }
+
+  return clients || [];
+}
+
 export default async function Page({ searchParams }: { searchParams: any }) {
   const weekNumberFromUrl = searchParams.week;
 
-  const events = await getEvents();
+  const events = await getEvents(searchParams.client);
+  const clients = await getClients();
 
   let today;
   if (weekNumberFromUrl) {
@@ -50,8 +77,6 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
   const startOfWeekDate = startOfWeek(today, { weekStartsOn: 1 });
   const endOfWeekDate = endOfWeek(today, { weekStartsOn: 1 });
-
-  const currentWeek = format(startOfWeekDate, 'MMMM yyyy');
 
   const week = [
     {
@@ -111,22 +136,28 @@ export default async function Page({ searchParams }: { searchParams: any }) {
     <div>
       <div className="flex items-center justify-between">
         <p className="text-lg font-semibold">Calendar</p>
-        <div className="flex items-center">
-          <Link
-            className="hover:bg-neutral-100 p-1.5 rounded"
-            href={`?week=${format(previousMonday(today), 'dd/MM/yyyy')}`}
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </Link>
-          <Link className="hover:bg-neutral-100 p-1.5 rounded" href="/calendar">
-            <Dot className="w-4 h-4" />
-          </Link>
-          <Link
-            className="hover:bg-neutral-100 p-1.5 rounded"
-            href={`?week=${format(nextMonday(today), 'dd/MM/yyyy')}`}
-          >
-            <ChevronRight className="w-4 h-4" />
-          </Link>
+        <div className="flex gap-2 items-center">
+          <div className="flex items-center">
+            <Link
+              className="hover:bg-neutral-100 p-1.5 rounded"
+              href={`?week=${format(previousMonday(today), 'dd/MM/yyyy')}`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Link>
+            <Link
+              className="hover:bg-neutral-100 p-1.5 rounded"
+              href="/calendar"
+            >
+              <Dot className="w-4 h-4" />
+            </Link>
+            <Link
+              className="hover:bg-neutral-100 p-1.5 rounded"
+              href={`?week=${format(nextMonday(today), 'dd/MM/yyyy')}`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          {/* <ClientFilter clients={clients} /> */}
         </div>
       </div>
       <div>
