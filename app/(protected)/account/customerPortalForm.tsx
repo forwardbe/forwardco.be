@@ -27,16 +27,30 @@ export default function CustomerPortalForm({ subscription }: any) {
 
   return (
     <div>
-      <button onClick={handleStripePortalRequest}>Open customer portal</button>
       {subscription
         ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
         : 'You are not currently subscribed to any plan.'}
-      <div className="mt-8 bg-red-200 mb-4 text-xl font-semibold">
-        {subscription ? (
-          `${subscriptionPrice}/${subscription?.prices?.interval}`
-        ) : (
-          <Link href="/pricing">Choose your plan</Link>
-        )}
+      <div className="flex items-center gap-2 mt-2">
+        <div className="">
+          {subscription ? (
+            <p className="py-2 flex w-fit px-4 disabled:opacity-40 disabled:cursor-not-allowed text-sm rounded-md no-underline bg-neutral-200 hover:bg-neutral-300 transition">
+              Your plan: {subscriptionPrice}/{subscription?.prices?.interval}
+            </p>
+          ) : (
+            <Link
+              className="py-2 flex w-fit px-4 disabled:opacity-40 disabled:cursor-not-allowed text-sm rounded-md no-underline bg-neutral-200 hover:bg-neutral-300 transition"
+              href="/pricing"
+            >
+              Choose your plan
+            </Link>
+          )}
+        </div>
+        <button
+          className="py-2 flex w-fit px-4 disabled:opacity-40 disabled:cursor-not-allowed text-sm rounded-md no-underline bg-neutral-200 hover:bg-neutral-300 transition"
+          onClick={handleStripePortalRequest}
+        >
+          Manage plan
+        </button>
       </div>
     </div>
   );

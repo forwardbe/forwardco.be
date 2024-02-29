@@ -63,10 +63,6 @@ export default async function Page() {
   return (
     <div>
       <p className="text-lg font-semibold">Business info</p>
-      <Link href="https://buy.stripe.com/test_6oEbIK7mgeg3dxebII">
-        PRO PLAN
-      </Link>
-      <CustomerPortalForm subscription={subscription} />
       <form className="mt-4 bg-neutral-50 p-6 rounded-lg">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           <Input
@@ -129,6 +125,10 @@ export default async function Page() {
           </SubmitButton>
         </div>
       </form>
+      <p className="text-lg font-semibold mt-8">Business info</p>
+      <div className="mt-4 bg-neutral-50 p-6 rounded-lg">
+        <CustomerPortalForm subscription={subscription} />
+      </div>
     </div>
   );
 }

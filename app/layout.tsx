@@ -8,8 +8,9 @@ const defaultUrl = process.env.WEBSITE_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Next.js and Supabase Starter Kit',
-  description: 'The fastest way to build apps with Next.js and Supabase',
+  title: 'Chronobill - Time tracking & invoicing',
+  description:
+    'Chronobill makes it easy to track time across all your projects. Then turn that data into reporting or invoices.',
 };
 
 const isLocal = process.env.WEBSITE_URL === 'http://localhost:3000';
@@ -24,7 +25,7 @@ export default function RootLayout({
       <body>
         <Toaster />
         <main>
-          {/* {isLocal ? (
+          {isLocal ? (
             <div
               style={{
                 position: 'fixed',
@@ -39,7 +40,7 @@ export default function RootLayout({
             >
               <p>Local</p>
             </div>
-          ) : null} */}
+          ) : null}
           {children}
         </main>
       </body>

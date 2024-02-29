@@ -48,20 +48,27 @@ export default async function Page() {
   const clients = await getClients();
   const invoices = await getInvoices();
 
+  console.log(user.user_metadata.name);
+
   if (
-    user.user_metadata.name === '' ||
-    user.user_metadata.btw === '' ||
-    user.user_metadata.address === '' ||
-    user.user_metadata.phone === '' ||
-    user.user_metadata.email === '' ||
-    user.user_metadata.iban === '' ||
-    user.user_metadata.bic === '' ||
-    user.user_metadata.account === ''
+    user.user_metadata.name === undefined ||
+    user.user_metadata.btw === undefined ||
+    user.user_metadata.address === undefined ||
+    user.user_metadata.phone === undefined ||
+    user.user_metadata.email === undefined ||
+    user.user_metadata.iban === undefined ||
+    user.user_metadata.bic === undefined ||
+    user.user_metadata.account === undefined
   ) {
     return (
       <div>
         <p>
           You need to fill in your business info before you can create invoices.
+          You can do this on the{' '}
+          <Link className="underline" href="/account">
+            account page
+          </Link>
+          .
         </p>
       </div>
     );

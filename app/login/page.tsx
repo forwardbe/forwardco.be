@@ -33,7 +33,6 @@ export default function Login({
 
   const signUp = async (formData: FormData) => {
     'use server';
-
     const origin = headers().get('origin');
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -47,21 +46,25 @@ export default function Login({
       },
     });
 
-    if (error) {
-      return redirect('/login?message=Could not authenticate user');
-    }
+    console.log(error);
 
+    if (error) {
+      return redirect(`/login?message=${error.message}`);
+    }
     return redirect(
-      '/login?message=Succesfully signed up, you can log in now! 🎉'
+      '/calendar'
     );
   };
 
   return (
     <div className="max-w-md mx-auto py-16">
-      <Image className="fl" src={Logo} alt="Chronobill Logo" width={100} />
+      <Button as="link" href="/">
+        {'<-'}
+      </Button>
+      <Image className="mt-12" src={Logo} alt="Chronobill Logo" width={100} />
 
-      <p className="text-2xl font-semibold mt-4">Chronobill</p>
-      <form className="mt-8 flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
+      <p className="text-2xl font-semibold mt-12">Chronobill</p>
+      <form className="mt-4 flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
         <label className="text-md" htmlFor="email">
           Email
         </label>
