@@ -3,8 +3,9 @@ import { headers } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { SubmitButton } from './submit-button';
-import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
+import Image from 'next/image';
+import Logo from '@/assets/logo.png';
 
 export default function Login({
   searchParams,
@@ -50,15 +51,16 @@ export default function Login({
       return redirect('/login?message=Could not authenticate user');
     }
 
-    return redirect('/login?message=Succesfully signed up, you can log in now! 🎉');
+    return redirect(
+      '/login?message=Succesfully signed up, you can log in now! 🎉'
+    );
   };
 
   return (
     <div className="max-w-md mx-auto py-16">
-      <Button as="link" href="/">
-        Go back
-      </Button>
-      <p className="text-2xl font-semibold mt-8">Chronobill {'->'}</p>
+      <Image className="fl" src={Logo} alt="Chronobill Logo" width={100} />
+
+      <p className="text-2xl font-semibold mt-4">Chronobill</p>
       <form className="mt-8 flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
         <label className="text-md" htmlFor="email">
           Email

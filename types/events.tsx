@@ -5,4 +5,5 @@ export type Event = {
   end: string;
   client_id: string;
   timeAsDecimal: number;
+  invoiced: boolean;
 };

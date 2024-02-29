@@ -1,6 +1,8 @@
-import Button from '@/components/Button';
+import { formatCurrency } from '@/app/utils/money';
 import SubmitButton from '@/components/SubmitButton';
 import { createClient } from '@/utils/supabase/server';
+import { format } from 'date-fns';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 async function getUser() {
@@ -27,9 +29,24 @@ async function getClients() {
   return clients || [];
 }
 
+async function getInvoices() {
+  const supabase = createClient();
+  const { data: invoices, error } = await supabase
+    .from('invoices')
+    .select(`*, client_id (name)`)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    return redirect('/invoices');
+  }
+
+  return invoices;
+}
+
 export default async function Page() {
   const user = await getUser();
   const clients = await getClients();
+  const invoices = await getInvoices();
 
   if (
     user.user_metadata.name === '' ||
@@ -61,7 +78,7 @@ export default async function Page() {
   return (
     <div>
       <div>
-        <p className="text-lg font-semibold">Invoices</p>
+        <p className="text-lg font-semibold">Create new invoice</p>
         <form className="mt-4 bg-neutral-50 p-6 rounded-lg">
           <div className="grid grid-cols-2 gap-x-4 gap-y-6">
             <div className="col-span-2">
@@ -94,6 +111,63 @@ export default async function Page() {
           </div>
         </form>
         <p className="text-lg font-semibold mt-6">Previous invoices</p>
+        <table className="w-full mt-4">
+          <thead className="border rounded">
+            <tr>
+              <th className="text-left font-semibold border-r py-3 text-sm px-6 rounded-l">
+                ID
+              </th>
+              <th className="text-left font-semibold border-r py-3 text-sm px-6">
+                Client
+              </th>
+              <th className="text-left font-semibold border-r py-3 text-sm px-6">
+                Issued
+              </th>
+              <th className="text-left font-semibold py-3 text-sm px-6">
+                Due date
+              </th>
+
+              <th className="text-left font-semibold py-3 text-sm px-6 sr-only rounded-r">
+                Edit
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoices.map((invoice) => (
+              <tr
+                key={invoice.id}
+                className="border-b last:border-none hover:bg-neutral-100 transition"
+              >
+                <td className="py-4 px-6 whitespace-nowrap">
+                  {invoice.invoice_id}
+                </td>
+                <td className="py-4 px-6 whitespace-nowrap">
+                  {invoice.client_id.name}
+                </td>
+                <td className="py-4 px-6 whitespace-nowrap">
+                  {format(invoice.issue, 'dd/MM/yyyy')}
+                </td>
+                <td className="py-4 px-6 whitespace-nowrap">
+                  {format(invoice.due, 'dd/MM/yyyy')}
+                </td>
+
+                <td className="py-4 px-6 whitespace-nowrap flex items-center justify-end gap-3">
+                  <Link
+                    href={`/invoices/view/${invoice.id}`}
+                    className="hover:underline"
+                  >
+                    View
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {clients.length === 0 && (
+          <p className="mt-4 ml-6 text-neutral-400">
+            No clients yet. Add your first client to get started.
+          </p>
+        )}
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ export default async function Page() {
         </thead>
         <tbody>
           {clients.map((client) => (
-            <tr key={client.id} className="border-b last:border-none">
+            <tr key={client.id} className="border-b last:border-none hover:bg-neutral-100 transition">
               <td className="py-4 px-6 whitespace-nowrap">{client.name}</td>
               <td className="py-4 px-6 whitespace-nowrap">{client.email}</td>
               <td className="py-4 px-6 whitespace-nowrap">{client.phone}</td>

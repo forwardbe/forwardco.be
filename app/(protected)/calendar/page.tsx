@@ -12,11 +12,11 @@ import {
 } from 'date-fns';
 import {
   ArrowRight,
+  Check,
   ChevronLeft,
   ChevronRight,
   Dot,
   Plus,
-  Slash,
   User,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -139,19 +139,15 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                 day.isWeekend
                   ? 'bg-neutral-100 first:rounded-tl last:rounded-tr'
                   : null,
-                day.isToday ? 'bg-black text-white' : ''
+                day.isToday ? '!pl-4' : null
               )}
             >
               <div className="flex items-center gap-1">
+                {day.isToday ? (
+                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                ) : null}
                 <p className="font-semibold text-sm">{day.day}</p>
-                <p
-                  className={clsx(
-                    day.isToday ? 'text-white/70' : '',
-                    'text-neutral-700 text-sm'
-                  )}
-                >
-                  {day.date}
-                </p>
+                <p className={clsx('text-neutral-700 text-sm')}>{day.date}</p>
               </div>
             </div>
           ))}
@@ -166,7 +162,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                   <Link
                     key={event.id}
                     href={`/edit/event/${event.id}`}
-                    className="border-b hover:bg-neutral-200 transition flex last:border-none flex-col bg-neutral-100 p-4"
+                    className="border-b hover:bg-neutral-100 transition flex last:border-none flex-col  p-4"
                   >
                     <div className="flex items-center gap-1 text-sm">
                       <p>{event.start}</p>
@@ -179,6 +175,14 @@ export default async function Page({ searchParams }: { searchParams: any }) {
                       </div>
                       <p>{event.client_id.name}</p>
                     </div>
+                    {event.invoiced ? (
+                      <div className="flex mt-1 text-sm items-center gap-1 break-words whitespace-nowrap text-ellipsis overflow-hidden">
+                        <div>
+                          <Check className="w-3.5 h-3.5" />
+                        </div>
+                        <p>Invoiced</p>
+                      </div>
+                    ) : null}
                   </Link>
                 ))}
               <div className="flex p-4 items-center group">

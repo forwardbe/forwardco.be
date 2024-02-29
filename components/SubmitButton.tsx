@@ -25,7 +25,7 @@ export default function SubmitButton({
 
   if (danger) {
     classNames = clsx(
-      'py-2 flex w-fit text-white px-4 disabled:opacity-40 disabled:cursor-not-allowed text-sm rounded-md no-underline bg-red-500 hover:bg-red-600 transition'
+      'py-2 flex w-fit text-white px-4 !disabled:opacity-40 !disabled:cursor-not-allowed text-sm rounded-md no-underline bg-red-500 hover:bg-red-600 transition'
     );
   } else {
     classNames = clsx(

@@ -108,13 +108,20 @@ export default async function Page({ params }: { params: { id: string } }) {
         <p className="text-lg font-semibold">Edit event</p>
         <form>
           <input type="hidden" name="id" value={event.id} />
-          <SubmitButton
-            formAction={deleteEvent}
-            pendingText="Deleting..."
-            danger
-          >
-            Delete event
-          </SubmitButton>
+          {event.invoiced ? (
+            <p className="text-neutral-600">
+              Event has been invoiced, cannot be deleted or updated.
+            </p>
+          ) : (
+            <SubmitButton
+              formAction={deleteEvent}
+              pendingText="Deleting..."
+              danger
+              disabled={event.invoiced}
+            >
+              Delete event
+            </SubmitButton>
+          )}
         </form>
       </div>
       <form className="mt-4 bg-neutral-50 p-6 rounded-lg">
@@ -164,17 +171,22 @@ export default async function Page({ params }: { params: { id: string } }) {
             </select>
           </div>
         </div>
-        <div className="mt-6 gap-2 flex items-center justify-end">
-          <Button as="link" href="/calendar">
-            Cancel
-          </Button>
-          <SubmitButton
-            formAction={updateEvent}
-            pendingText="Updating..."
-            disabled={clients.length === 0}
+        <div className="mt-6">
+          <fieldset
+            disabled={event.invoiced}
+            className="gap-2 flex items-center justify-end"
           >
-            Update
-          </SubmitButton>
+            <Button as="link" href="/calendar">
+              Cancel
+            </Button>
+            <SubmitButton
+              formAction={updateEvent}
+              pendingText="Updating..."
+              disabled={clients.length === 0}
+            >
+              Update
+            </SubmitButton>
+          </fieldset>
         </div>
       </form>
     </div>

@@ -54,6 +54,7 @@ export default async function Page() {
             label="Business name"
             defaultValue={user.user_metadata.name}
             id="name"
+            required
           />
           <Input
             label="Business phone"

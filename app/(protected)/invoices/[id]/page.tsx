@@ -7,7 +7,8 @@ async function getEventsById(id: string) {
   const { data: events, error } = await supabase
     .from('events')
     .select(`*, client_id (name)`)
-    .eq('client_id', id);
+    .eq('client_id', id)
+    .eq('invoiced', false);
 
   if (error) {
     return redirect('/invoices');
