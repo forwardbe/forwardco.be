@@ -1,30 +1,75 @@
-import Image from 'next/image';
-import AuthButton from '../components/AuthButton';
-import Logo from '@/assets/logo.png';
-import Button from '@/components/Button';
-import { GridPattern } from '@/components/GridPattern';
+import AuthButton from '@/components/AuthButton';
+import Code from '@/components/Code';
+import Link from 'next/link';
+
+const client = `
+'use client'
+
+import { createClient } from '@/utils/supabase/client'
+import { useEffect, useState } from 'react'
+
+export default function Page() {
+  const [notes, setNotes] = useState(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await supabase.from('notes').select()
+      setNotes(data)
+    }
+    getData()
+  }, [])
+
+  return <pre>{JSON.stringify(notes, null, 2)}</pre>
+}
+`.trim();
+
+const server = `
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
+
+async function getUser() {
+  const supabase = createClient();
+  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user === null) {
+    return redirect('/login');
+  }
+
+  return user;
+}
+
+`.trim();
 
 export default async function Index() {
   return (
-    <div className="max-w-7xl mx-auto">
-      <nav className="flex items-center bg-white justify-between border-b py-6 border-neutral-200">
-        <div className="flex items-center gap-2">
-          <Image src={Logo} alt="Chronobill Logo" width={40} />
-          <p className="text-lg font-semibold">Chronobill</p>
-        </div>
-        <AuthButton homeButton={true} />
-      </nav>
-      <div className="flex items-center justify-center flex-col border-b border-neutral-200 pb-32">
-        <Image className="mt-32" src={Logo} alt="Chronobill Logo" width={120} />
-
-        <p className="text-5xl mt-12">More then time tracking</p>
-        <p className="text-lg w-1/3 text-center mt-4 mb-8">
-          Chronobill makes it easy to track time across all your clients and
-          projects.
-        </p>
-        <Button as="link" href="/register">
-          Get started
-        </Button>
+    <div className="max-w-7xl mx-auto py-20">
+      <div className="flex items-center justify-between border-b pb-4 mb-8">
+        <p className="text-lg font-semibold">Nextjs Supabase Starter</p>
+        <AuthButton />
+        {/* <div className="flex items-center gap-2">
+          <Link
+            href="/signin"
+            className="text-sm hover:bg-neutral-300 transition bg-neutral-200 px-4 py-2 rounded-lg"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/signup"
+            className="text-sm hover:bg-neutral-300 transition bg-neutral-200 px-4 py-2 rounded-lg"
+          >
+            Sign Up
+          </Link>
+        </div> */}
+      </div>
+      <div>
+        <p className="text-lg font-semibold mb-4">Client</p>
+        <Code code={client} />
+        <p className="text-lg font-semibold mb-4 mt-12">Server</p>
+        <Code code={server} />
       </div>
     </div>
   );

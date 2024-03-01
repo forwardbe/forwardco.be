@@ -13,8 +13,6 @@ export const metadata = {
     'Chronobill makes it easy to track time across all your projects. Then turn that data into reporting or invoices.',
 };
 
-const isLocal = process.env.WEBSITE_URL === 'http://localhost:3000';
-
 export default function RootLayout({
   children,
 }: {
@@ -24,25 +22,7 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.className}>
       <body>
         <Toaster />
-        <main>
-          {isLocal ? (
-            <div
-              style={{
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 9999,
-                padding: '1rem',
-                backgroundColor: 'red',
-                color: 'white',
-              }}
-            >
-              <p>Local</p>
-            </div>
-          ) : null}
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );

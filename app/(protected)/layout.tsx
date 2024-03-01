@@ -1,6 +1,6 @@
+import AuthButton from '@/components/AuthButton';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import Header from '@/components/Header';
 
 export default async function Layout({
   children,
@@ -14,15 +14,16 @@ export default async function Layout({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect('/login');
+    return redirect('/signin');
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mx-4">
-        <Header />
-        <div className="py-10">{children}</div>
+    <div className="max-w-7xl mx-auto py-20">
+      <div className="flex items-center justify-between border-b pb-4 mb-8">
+        <p className="text-lg font-semibold">Dashboard</p>
+        <AuthButton />
       </div>
+      {children}
     </div>
   );
 }
