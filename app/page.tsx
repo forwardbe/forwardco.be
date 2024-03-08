@@ -1,6 +1,7 @@
 import AuthButton from '@/components/AuthButton';
 import Code from '@/components/Code';
-import Link from 'next/link';
+import { Input, Select } from '@/components/FormElements';
+import { Euro } from 'lucide-react';
 
 const client = `
 'use client'
@@ -50,20 +51,38 @@ export default async function Index() {
       <div className="flex items-center justify-between border-b pb-4 mb-8">
         <p className="text-lg font-semibold">Nextjs Supabase Starter</p>
         <AuthButton />
-        {/* <div className="flex items-center gap-2">
-          <Link
-            href="/signin"
-            className="text-sm hover:bg-neutral-300 transition bg-neutral-200 px-4 py-2 rounded-lg"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/signup"
-            className="text-sm hover:bg-neutral-300 transition bg-neutral-200 px-4 py-2 rounded-lg"
-          >
-            Sign Up
-          </Link>
-        </div> */}
+      </div>
+      <div className="py-20">
+        <Input id="password" label="Password" type="password" small />
+        <Input
+          id="password"
+          label="Password"
+          startIcon={Euro}
+          endIcon={Euro}
+          small
+        />
+        <Input id="password" label="Password" endIcon={Euro} small />
+        <Input id="password" label="Password" endIcon={Euro} small />
+        <Input id="password" label="Password" endIcon={Euro} />
+        <Input id="password" label="Password" startIcon={Euro} />
+        <div className="w-40">
+          <Input
+            id="password"
+            label="Password"
+            endText=".com"
+            textPadding="pr-[72px]"
+          />
+        </div>
+        <Select
+          small
+          label="Client"
+          id="client"
+          options={[
+            { id: 1, name: 'test' },
+            { id: 1, name: 'test' },
+            { id: 1, name: 'test' },
+          ]}
+        />
       </div>
       <div>
         <p className="text-lg font-semibold mb-4">Client</p>
