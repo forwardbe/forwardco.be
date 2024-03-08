@@ -13,3 +13,4 @@ This template uses Nextjs, Tailwind and Supabase.
 ```git remote remove origin```
 - Setup new git
 ```git init```
+# jaspervermeulen.com-2024
