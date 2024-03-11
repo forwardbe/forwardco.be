@@ -1,48 +1,12 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import BuilderImage from '@/assets/images/builder.png';
-import ChronobillImage from '@/assets/images/chronobill.png';
-import SidetrackImage from '@/assets/images/sidetrack.png';
-import MenuuuImage from '@/assets/images/menuuu.png';
+
 import Button from '@/components/Button';
-import { ArrowUpRight } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
+import { web } from '@/data/services';
+import { products } from '@/data/products';
 
-export const products = [
-  {
-    id: 1,
-    title: 'Chronobill',
-    url: 'https://chronobill.be',
-    description:
-      'Create clients and keep track of all your clients in one place.',
-    image: ChronobillImage,
-  },
-  {
-    id: 2,
-    title: 'Menuuu',
-    url: 'https://menuuu.com',
-    description: 'Maak je online menu in seconden',
-    image: MenuuuImage,
-  },
-  {
-    id: 2,
-    title: 'Sidetrack',
-    url: 'https://sidetrack.be',
-    description: 'Track time across various projects and clients with ease.',
-    image: SidetrackImage,
-  },
-];
-
-const web = [
-  'Web design',
-  'Responsive design',
-  'Front-end web development',
-  'Framer/Webflow development',
-  'BAAS development',
-  'Detailed, rich user interfaces',
-  'Low fidelity prototyping',
-];
-
-export default async function Index() {
+export default function Index() {
   return (
     <div>
       <div className="py-24 border-b flex items-center justify-between">
@@ -97,29 +61,9 @@ export default async function Index() {
             See all side projects
           </Button>
         </div>
-        <div className="grid md:grid-cols-2 mt-12 gap-6">
+        <div className="grid md:grid-cols-2 mt-12 gap-x-6 gap-y-12">
           {products.map((item) => (
-            <div key={item.id}>
-              <Image
-                src={item.image}
-                alt="Create client"
-                className="h-72 object-cover"
-              />
-              <div className="mx-2">
-                <div className="flex items-center justify-between mt-6">
-                  <p className="text-neutral-700 dark:text-neutral-300">
-                    {item.title}
-                  </p>
-                  <Link
-                    href="/"
-                    className="p-2 hover:bg-neutral-100 rounded transition"
-                  >
-                    <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
-                <p className="text-sm text-neutral-600">{item.description}</p>
-              </div>
-            </div>
+            <ProductCard key={item.id} {...item} />
           ))}
         </div>
       </div>

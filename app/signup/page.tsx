@@ -25,8 +25,6 @@ export default function Login({
       },
     });
 
-    console.log(error);
-
     if (error) {
       return redirect(`/signup?message=${error.message}`);
     }
