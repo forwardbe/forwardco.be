@@ -1,17 +1,1 @@
-## Nextjs Supabase Starter Template
-
-This template uses Nextjs, Tailwind and Supabase.
-
-### Database
-
-- Copy env file and fill in env's
-- Login / Register via /signin and /signup
-
-### Create new project steps
-
-- Remove origin
-```git remote remove origin```
-- Setup new git
-```git init```
-# jaspervermeulen.com-2024
-# forwardco.be
+![Forward Logo](https://github.com/forwardbe/forwardco.be/assets/56585012/ed2fdfe9-912c-44ad-99d4-7ff4518c0c04)
