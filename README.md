@@ -14,3 +14,4 @@ This template uses Nextjs, Tailwind and Supabase.
 - Setup new git
 ```git init```
 # jaspervermeulen.com-2024
+# forwardco.be
