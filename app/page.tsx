@@ -17,7 +17,7 @@ export default function Index() {
       </p>
       <Link
         className="text-sm bg-black text-white px-4 py-3 rounded-full"
-        href="mailto:jaspervermeulen@icloud.com"
+        href="mailto:jaspervermeulen@icloud.com?subject=Contact - Studio Forward"
       >
         Contact
       </Link>
