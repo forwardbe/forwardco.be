@@ -1,5 +1,7 @@
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
   title:
@@ -15,6 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.className}>
+      <Analytics />
+      <SpeedInsights />
       <body>
         <main>{children}</main>
       </body>
