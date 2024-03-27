@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Index() {
   return (
-    <div className="max-w-xl mx-4 md:mx-10 py-10 md:py-20">
+    <div className="max-w-xl mx-4 md:mx-10 py-14 md:py-20">
       <Logo />
       <p className="mt-8 text-neutral-600">
         Forward is a tiny spec on the internet, we build visually and
